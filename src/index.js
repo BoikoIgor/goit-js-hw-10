@@ -17,12 +17,13 @@ const loadCountry = name => {
       console.log(err.message);
     });
 };
-// loadCountry('peru');
-fetch('https://restcountries.com/v3.1/all')
-  .then(response => response.json())
-  .then(data => {
-    console.log(data);
-  })
-  .catch(err => {
-    console.log(err);
-  });
+loadCountry('peru');
+
+// fetch('https://restcountries.com/v3.1/all')
+//   .then(response => response.json())
+//   .then(data => {
+//     console.log(data);
+//   })
+//   .catch(err => {
+//     console.log(err);
+//   });
