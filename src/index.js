@@ -150,7 +150,7 @@ function renderCountryDetails(country) {
 }
 
 // Call the renderCountryDetails function with the first country in the countries array
-renderCountryDetails(countries[0]);
+// renderCountryDetails(countries[0]);
 
 const loadCountry = name => {
   let currentCountry;
