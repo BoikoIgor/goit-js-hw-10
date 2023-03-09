@@ -16,50 +16,39 @@ function onSearch(event) {
   // зберігаємо значення з інпуту, видаляючи всі пробіли з кінця і початку рядка
   const searchQuery = event.target.value.trim();
   // якщо інпут порожній, очистимо розмітку
-  if (!searchQuery) {
+  if (!searchQuery || searchQuery === '') {
     clearMarkup();
-    return; //???
+    return;
   }
   // отримуємо список країн з API
   fetchCountries(searchQuery)
     // якщо є відповідь - рендеремо
-    .then(renderMarkup)
+    .then(countries => {
+      if (countries.length > 10) {
+        Notiflix.Notify.info(
+          'Too many matches found. Please enter a more specific name.'
+        );
+        return;
+      }
+
+      if (countries.length > 1 && countries.length <= 10) {
+        renderCountryList(countries);
+        return;
+      }
+
+      if (countries.length === 1) {
+        renderCountryInfo(countries[0]);
+        return;
+      }
+    })
     .catch(error => {
       // При помилці очищаємо та виводимо помилку
       clearMarkup();
       Notiflix.Notify.failure('Oops, there is no country with that name');
     });
 }
-// функція для рендеру розмітки країн на сторінці
-function renderMarkup(countries) {
-  // // якщо у відповідь "0" країн - вичищаємо, виводимо помилку і виходимо
-  // if (countries.length === 0) {
-  //   clearMarkup();
-  //   Notiflix.Notify.failure('Oops, there is no country with that name');
-  //   return;
-  // }
-  // якщо кількість країн з беку більше 10 од., виводимо повідомлення і вичищаємо
-  if (countries.length > 10) {
-    clearMarkup();
-    Notiflix.Notify.info(
-      'Too many matches found. Please enter a more specific name.'
-    );
-    return;
-  }
-
-  if (countries.length > 1 && countries.length <= 10) {
-    renderCountryList(countries);
-    return;
-  }
-
-  if (countries.length === 1) {
-    renderCountryInfo(countries[0]);
-    return;
-  }
-}
-
+// очистимо попередні результати пошуку
 function clearMarkup() {
-  // очистимо попередній список країн
   countryList.innerHTML = '';
   countryInfo.innerHTML = '';
 }
@@ -77,19 +66,17 @@ function renderCountryList(countries) {
 }
 
 function renderCountryInfo(country) {
-  const languages = country.languages.map(lang => lang.name).join(', ');
+  const languages = Object.values(country.languages)
+    .map(el => el)
+    .join(', ');
 
   const markup = `
-    <div class="country-info__flag">
-      <img src="${country.flags.svg}" alt="${country.name.official} flag">
-    </div>
-    <div class="country-info__details">
-      <h2>${country.name.official}</h2>
-      <p><strong>Capital:</strong> ${country.capital}</p>
-      <p><strong>Population:</strong> ${country.population.toLocaleString()}</p>
-      <p><strong>Languages:</strong> ${languages}</p>
-    </div>
-  `;
+    <img src="${country.flags.svg}" alt="${country.name.official} flag">
+    <h2>${country.name.official}</h2>
+    <p><strong>Capital:</strong> ${country.capital}</p>
+    <p><strong>Population:</strong> ${country.population}</p>
+    <p><strong>Languages:</strong> ${languages}</p>
+    `;
 
   countryInfo.innerHTML = markup;
   countryList.innerHTML = '';
