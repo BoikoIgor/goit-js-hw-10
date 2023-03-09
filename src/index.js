@@ -57,7 +57,7 @@ function renderCountryList(countries) {
   const markup = countries
     .map(
       country =>
-        `<li><img src="${country.flags.svg}" alt="${country.name.official} flag"> ${country.name.official}</li>`
+        `<li><img src="${country.flags.svg}" alt="${country.name.official} flag"><p>${country.name.official}</p> </li>`
     )
     .join('');
 
@@ -70,9 +70,9 @@ function renderCountryInfo(country) {
     .map(el => el)
     .join(', ');
 
-  const markup = `
+  const markup = `<div class="wrap">
     <img src="${country.flags.svg}" alt="${country.name.official} flag">
-    <h2>${country.name.official}</h2>
+    <h1>${country.name.official}</h1></div>
     <p><strong>Capital:</strong> ${country.capital}</p>
     <p><strong>Population:</strong> ${country.population}</p>
     <p><strong>Languages:</strong> ${languages}</p>
